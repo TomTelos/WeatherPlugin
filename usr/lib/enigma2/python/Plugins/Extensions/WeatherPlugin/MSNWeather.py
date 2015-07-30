@@ -47,6 +47,9 @@ class MSNWeather:
         path = '/etc/enigma2/weather_icons/'
         extension = self.checkIconExtension(path)
         if extension is None:
+			path = '/usr/local/share/enigma2/weather_icons/'
+			extension = self.checkIconExtension(path)
+        if extension is None:
             path = os_path.dirname(resolveFilename(SCOPE_SKIN, config.skin.primary_skin.value)) + '/weather_icons/'
             extension = self.checkIconExtension(path)
         if extension is None:
