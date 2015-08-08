@@ -202,12 +202,12 @@ class MSNWeather:
                     weather.code = items.attrib.get('skycodeday').encode('utf-8', 'ignore')
                     filename = '%s%s' % (self.iconpath, weather.skycodeday)
                     weather.iconFilename = filename
-                    if not os_path.exists(filename):
-                        url = '%s%s' % (self.imagerelativeurl, weather.skycodeday)
-                        IconDownloadList.append(WeatherIconItem(url=url, filename=filename, index=index))
+                    weather.iconFilename = filename
+                    self.weatherItems[str(index)] = weather
+                    if items.attrib.get('precip').encode('utf-8', 'ignore') == '':
+                        index -= 1	
                     else:
                         self.showIcon(index, filename)
-                    self.weatherItems[str(index)] = weather
 
         if len(IconDownloadList) != 0:
             ds = defer.DeferredSemaphore(tokens=len(IconDownloadList))
