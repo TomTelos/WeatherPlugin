@@ -1,3 +1,4 @@
+# Embedded file name: ./WeatherPlugin/usr/lib/enigma2/python/Plugins/Extensions/WeatherPlugin/setup.py
 from . import _
 from enigma import eListboxPythonMultiContent, gFont, RT_HALIGN_LEFT, RT_VALIGN_CENTER
 from Screens.Screen import Screen
@@ -81,6 +82,7 @@ class MSNWeatherPluginEntriesListConfigScreen(Screen):
         else:
             self.session.openWithCallback(self.updateList, MSNWeatherPluginEntryConfigScreen, sel)
             return
+            return
 
     def keyDelete(self):
         try:
@@ -92,6 +94,7 @@ class MSNWeatherPluginEntriesListConfigScreen(Screen):
             return
         else:
             self.session.openWithCallback(self.deleteConfirm, MessageBox, _('Really delete this WeatherPlugin Entry?'))
+            return
             return
 
     def deleteConfirm(self, result):
@@ -178,7 +181,9 @@ class MSNWeatherPluginEntryConfigScreen(ConfigListScreen, Screen):
                 language = 'en-US'
             elif language == 'no-NO':
                 language = 'nn-NO'
-            url = 'http://weather.service.msn.com/find.aspx?src=vista&outputview=search&weasearchstr=%s&culture=%s' % (urllib_quote(self.current.city.value), language)
+            elif language == 'pl-PL':
+                language = 'pl-PL'
+            url = "http://weather.service.msn.com/find.aspx?src=outlook&outputview=search&weasearchstr=%s&culture=%s" % (urllib_quote(self.current.city.value), language)
             getPage(url).addCallback(self.xmlCallback).addErrback(self.error)
         else:
             self.session.open(MessageBox, _('You need to enter a valid city name before you can search for the location code.'), MessageBox.TYPE_ERROR)
@@ -292,23 +297,23 @@ class MSNWeatherPluginSearchResultList(MenuList):
 
     def buildList(self, xml):
         root = cet_fromstring(xml)
-        searchlocation = ''
+        weatherlocationname = ''
         searchresult = ''
         weatherlocationcode = ''
         list = []
         for childs in root:
             if childs.tag == 'weather':
-                searchlocation = childs.attrib.get('searchlocation').encode('utf-8', 'ignore')
+                weatherlocationname = childs.attrib.get('weatherlocationname').encode('utf-8', 'ignore')
                 searchresult = childs.attrib.get('searchresult').encode('utf-8', 'ignore')
                 weatherlocationcode = childs.attrib.get('weatherlocationcode').encode('utf-8', 'ignore')
-                res = [(weatherlocationcode, searchlocation), (eListboxPythonMultiContent.TYPE_TEXT,
+                res = [(weatherlocationcode, weatherlocationname), (eListboxPythonMultiContent.TYPE_TEXT,
                   5,
                   0,
                   500,
                   20,
                   1,
                   RT_HALIGN_LEFT | RT_VALIGN_CENTER,
-                  searchlocation), (eListboxPythonMultiContent.TYPE_TEXT,
+                  weatherlocationname), (eListboxPythonMultiContent.TYPE_TEXT,
                   5,
                   22,
                   500,
